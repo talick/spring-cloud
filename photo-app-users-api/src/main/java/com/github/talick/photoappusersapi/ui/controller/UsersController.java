@@ -4,6 +4,7 @@ import com.github.talick.photoappusersapi.service.UsersService;
 import com.github.talick.photoappusersapi.shared.UserDto;
 import com.github.talick.photoappusersapi.ui.model.CreateUserRequestModel;
 import com.github.talick.photoappusersapi.ui.model.CreateUserResponseModel;
+import com.github.talick.photoappusersapi.ui.model.UserResponseModel;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,5 +46,12 @@ public class UsersController {
         CreateUserResponseModel returnValue = modelMapper.map(userDto, CreateUserResponseModel.class);
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(returnValue);
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserResponseModel> getUser(@PathVariable("userId") String userId) {
+        UserDto userDto = usersService.getUserDetailByEmail(userId);
+        UserResponseModel returnValue = new ModelMapper().map(userDto, UserResponseModel.class);
+        return ResponseEntity.status(HttpStatus.OK).body(returnValue);
     }
 }
