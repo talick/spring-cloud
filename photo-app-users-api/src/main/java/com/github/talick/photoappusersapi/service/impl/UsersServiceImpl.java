@@ -1,5 +1,6 @@
 package com.github.talick.photoappusersapi.service.impl;
 
+import com.github.talick.photoappusersapi.data.AlbumServiceClient;
 import com.github.talick.photoappusersapi.data.UserEntity;
 import com.github.talick.photoappusersapi.repository.UsersRepository;
 import com.github.talick.photoappusersapi.shared.UserDto;
@@ -28,18 +29,19 @@ public class UsersServiceImpl implements UsersService {
 
     private final UsersRepository usersRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
-    private final RestTemplate restTemplate;
+    //    private final RestTemplate restTemplate;
+    private final AlbumServiceClient albumServiceClient;
     private final Environment environment;
 
     @Autowired
     public UsersServiceImpl(
             UsersRepository usersRepository,
             BCryptPasswordEncoder bCryptPasswordEncoder,
-            RestTemplate restTemplate,
+            AlbumServiceClient albumServiceClient,
             Environment environment) {
         this.usersRepository = usersRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.restTemplate = restTemplate;
+        this.albumServiceClient = albumServiceClient;
         this.environment = environment;
     }
 
@@ -83,12 +85,14 @@ public class UsersServiceImpl implements UsersService {
 
         UserDto userDto = new ModelMapper().map(userEntity, UserDto.class);
 
-        String albumsUrl = String.format(environment.getProperty("albums.url"), userId);
+/*        String albumsUrl = String.format(environment.getProperty("albums.url"), userId);
 
         ResponseEntity<List<AlbumResponseModel>> albumListResponse = restTemplate.exchange(albumsUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<AlbumResponseModel>>() {
 
         });
-        List<AlbumResponseModel> albums = albumListResponse.getBody();
+        List<AlbumResponseModel> albums = albumListResponse.getBody();*/
+
+        List<AlbumResponseModel> albums = albumServiceClient.getAlbums(userId);
         userDto.setAlbums(albums);
         return userDto;
     }
