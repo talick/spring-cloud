@@ -3,22 +3,21 @@ package com.github.talick.photoappusersapi.service.impl;
 import com.github.talick.photoappusersapi.data.AlbumServiceClient;
 import com.github.talick.photoappusersapi.data.UserEntity;
 import com.github.talick.photoappusersapi.repository.UsersRepository;
-import com.github.talick.photoappusersapi.shared.UserDto;
 import com.github.talick.photoappusersapi.service.UsersService;
+import com.github.talick.photoappusersapi.shared.UserDto;
 import com.github.talick.photoappusersapi.ui.model.AlbumResponseModel;
+import feign.FeignException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.env.Environment;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,18 +30,17 @@ public class UsersServiceImpl implements UsersService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     //    private final RestTemplate restTemplate;
     private final AlbumServiceClient albumServiceClient;
-    private final Environment environment;
+
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     public UsersServiceImpl(
             UsersRepository usersRepository,
             BCryptPasswordEncoder bCryptPasswordEncoder,
-            AlbumServiceClient albumServiceClient,
-            Environment environment) {
+            AlbumServiceClient albumServiceClient) {
         this.usersRepository = usersRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.albumServiceClient = albumServiceClient;
-        this.environment = environment;
     }
 
     @Override
